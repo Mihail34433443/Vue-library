@@ -132,7 +132,9 @@ footer {
   justify-content: space-between;
   align-items: center;
 }
-
+.addBook {
+  margin-top: 40px;
+}
 .container_addBook {
   display: flex;
   align-items: center;
@@ -178,6 +180,9 @@ footer {
   border: 1px solid #ddd;
   padding: 5px;
   margin: 0 0 10px 0;
+}
+.profile {
+  margin-top: 40px;
 }
 .container_profile {
   margin: 30px;

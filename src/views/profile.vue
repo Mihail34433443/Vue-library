@@ -1,5 +1,6 @@
 <template>
   <div class="profile">
+    <h1 class="title">ПРОФИЛЬ</h1>
     <div class="container_profile">
       <div class="profile_fio">Ваше ФИО: {{ fio }}</div>
       <div class="profile_phone">Ваш телефон: {{ phone }}</div>

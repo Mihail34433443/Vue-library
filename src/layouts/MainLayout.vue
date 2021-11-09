@@ -1,7 +1,7 @@
 <template>
   <div>
     <Header />
-    <Search />
+    
     <main class="app-content">
       <div class="app-page">
         <router-view />
@@ -15,7 +15,6 @@
 <script>
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import Search from "@/components/search-bar";
 
 export default {
   name: "main-layout",
@@ -27,7 +26,6 @@ export default {
   components: {
     Header,
     Footer,
-    Search,
   },
 };
 </script>

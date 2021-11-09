@@ -2,12 +2,12 @@
   <div class="catalog-item">
     <div v-if="book_data.availability == true" class="container_catalogItem">
       {{ book_data.name }}
-      <button @click="bookClick">заказать</button>
+      <button @click="bookClick">открыть</button>
     </div>
     <div v-else class="container_catalogItem">
       {{ book_data.name }}
       <p class="warning">нет в наличии</p>
-      <button disabled>заказать</button>
+      <button disabled>открыть</button>
     </div>
   </div>
 </template>

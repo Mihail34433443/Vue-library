@@ -17,7 +17,12 @@
 import firebase from "firebase/compat/app";
 
 export default {
-  name: 'addBook',
+  name: "addBook",
+  data() {
+    return {
+      library: [],
+    };
+  },
   methods: {
     addBook() {
       let form = document.forms.addBook.elements;
@@ -29,6 +34,23 @@ export default {
         availability: true,
       });
     },
+  },
+  created() {
+    // доделать селект выбора библиотеки (осталось вывести)
+    var data = [];
+    firebase.firestore().collection("library")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          data.push({
+            id: doc.id,
+            active_time: doc.data().active_time,
+            address: doc.data().address,
+            name: doc.data().name,
+          });
+        });
+      });
+    this.library.push(data);
   },
 };
 </script>
