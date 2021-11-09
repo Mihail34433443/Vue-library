@@ -12,7 +12,5 @@ export default {
   components: {
     catalog
   },
-  mounted: {
-  },
 };
 </script>
