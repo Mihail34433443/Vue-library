@@ -21,8 +21,8 @@ export default {
             id: uid,
             fio: doc.data().fio,
             phone: doc.data().phone,
+            role: doc.data().role,
           }
-          console.log(info)
           commit('setInfo', info)
         })
       })

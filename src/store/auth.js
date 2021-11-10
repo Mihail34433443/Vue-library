@@ -17,6 +17,7 @@ export default {
         await firebase.firestore().collection('users').doc(uid).collection('info').add({
           phone: phone,
           fio: fio,
+          role: 'user',
         })
       } catch (e) {
         console.log(e)
