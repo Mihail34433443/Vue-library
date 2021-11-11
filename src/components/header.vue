@@ -1,26 +1,32 @@
 <template>
   <header>
     <ul class="container_headerLink">
-      <router-link
-        v-for="link in links"
-        :key="link.url"
-        tag="li"
-        active-class="active"
-        :to="link.url"
-        :exact="link.exact"
-      >
-        <a class="header_link">{{ link.title }}</a>
-      </router-link>
+      <li>
+        <router-link class="header_link" :to="'/'">Главная</router-link>
+      </li>
+      <li v-if="this.$store.getters.info.role == 'admin'">
+        <router-link class="header_link" :to="'/orders'"
+          >Заказы (админ)</router-link
+        >
+      </li>
+      <li v-if="this.$store.getters.info.role == 'admin'">
+        <router-link class="header_link" :to="'/addBook'"
+          >Добавить книгу (админ)</router-link
+        >
+      </li>
     </ul>
     <div class="login_bar">
       <div
-        v-if="this.$store.getters.info.role == 'user'"
+        v-if="this.$store.getters.info.role != undefined"
         class="container_logout"
       >
-        <router-link :to="'/profile'" tag="button">Профиль</router-link>
+        <router-link :to="'/profile'"><button>Профиль</button></router-link>
         <button @click="logout">Выйти</button>
       </div>
-      <div v-else class="container_logout">
+      <div
+        v-if="this.$store.getters.info.role == undefined"
+        class="container_logout"
+      >
         <button @click="login">Войти</button>
       </div>
     </div>
@@ -29,13 +35,6 @@
 
 <script>
 export default {
-  data: () => ({
-    links: [
-      { title: "Главная", url: "/", exact: true },
-      { title: "Заказы (админ)", url: "/orders", user: "admin" },
-      { title: "Добавить книгу (админ)", url: "/addBook", user: "admin" },
-    ],
-  }),
   methods: {
     async logout() {
       await this.$store.dispatch("logout");
@@ -43,7 +42,7 @@ export default {
     async login() {
       await this.$store.dispatch("logout");
       this.$router.push("/login");
-    }
+    },
   },
 };
 </script>

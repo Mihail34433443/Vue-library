@@ -21,10 +21,15 @@ firebase.initializeApp({
   measurementId: "G-CLHHBCSH0X"
 })
 
-const app = new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount('#app')
+let app
+firebase.auth().onAuthStateChanged(() => {
+  if (!app) {
+    app = new Vue({
+      router,
+      store,
+      render: h => h(App)
+    }).$mount('#app')
+  }
+})
 
 export const db = firebase.firestore()

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import firebase from 'firebase/compat/app'
+import store from "../store"
 
 Vue.use(VueRouter)
 
@@ -79,7 +80,7 @@ router.beforeEach((to, from, next) => {
   else {
     next()
   }
-  //console.log(currentUser)
+  console.log(to.router.app.$store.state)
   /*
   if (requireAdmin && this.$store.getters.info.role == 'admin') {
     next()
