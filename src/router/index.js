@@ -80,7 +80,6 @@ router.beforeEach((to, from, next) => {
   else {
     next()
   }
-  console.log(to.router.app.$store.state)
   /*
   if (requireAdmin && this.$store.getters.info.role == 'admin') {
     next()

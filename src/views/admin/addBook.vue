@@ -1,5 +1,5 @@
 <template>
-  <div class="addBook">
+  <div class="addBook" v-if="this.$store.getters.info.role === 'admin'">
     <h1 class="title">ДОБАВИТЬ КНИГУ</h1>
     <form name="addBook" onsubmit="return false;">
       <div class="container_addBook">
@@ -11,6 +11,7 @@
       </div>
     </form>
   </div>
+  <h1 class="warningUser" v-else>Вам не доступен данный контент</h1>
 </template>
 
 <script>
@@ -36,13 +37,15 @@ export default {
     },
   },
   created() {
+    console.log(this.$store.getters.info.role)
     // доделать селект выбора библиотеки (осталось вывести)
-    var data = [];
-    firebase.firestore().collection("library")
+    firebase
+      .firestore()
+      .collection("library")
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          data.push({
+          this.library.push({
             id: doc.id,
             active_time: doc.data().active_time,
             address: doc.data().address,
@@ -50,7 +53,6 @@ export default {
           });
         });
       });
-    this.library.push(data);
   },
 };
 </script>

@@ -1,11 +1,12 @@
 <template>
-  <div class="order">
+  <div class="order" v-if="this.$store.getters.info.role === 'admin'">
     <h1 class="title">{{ order.name }}</h1>
     <p class="book_author">Автор: {{ order.author }}</p>
     <p class="book_library">Библиотека: {{ order.library }}</p>
     <p class="book_price">Цена: {{ order.price }}$</p>
     <button @click="orderBook">Одобрить</button>
   </div>
+  <h1 class="warningUser" v-else>Вам не доступен данный контент</h1>
 </template>
 
 <script>

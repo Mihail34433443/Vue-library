@@ -2,7 +2,7 @@
   <div class="catalog">
     <h1 class="title">ЗАКАЗЫ</h1>
     <catalogItem
-      v-for="order in orders[0]"
+      v-for="order in orders"
       :key="order.id"
       v-bind:order_data="order"
       @orderClick="orderClick"
@@ -30,14 +30,13 @@ export default {
     },
   },
   created() {
-    var orderData = [];
     firebase
       .firestore()
       .collection("order")
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          orderData.push({
+          this.orders.push({
             id: doc.id,
             addDate: doc.data().addDate,
             book: doc.data().book,
@@ -46,7 +45,6 @@ export default {
           });
         });
       });
-    this.orders.push(orderData);
   },
 };
 </script>

@@ -2,7 +2,7 @@
   <div class="catalog">
     <h1 class="title">ВСЕ КНИГИ</h1>
     <catalogItem
-      v-for="book in books[0]"
+      v-for="book in books"
       :key="book.id"
       v-bind:book_data="book"
       @bookClick="bookClick"
@@ -30,12 +30,11 @@ export default {
     },
   },
   created() {
-    var data = [];
     db.collection("books")
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          data.push({
+          this.books.push({
             id: doc.id,
             name: doc.data().name,
             author: doc.data().author,
@@ -45,7 +44,6 @@ export default {
           });
         });
       });
-    this.books.push(data);
   },
 };
 </script>

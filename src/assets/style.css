@@ -22,6 +22,10 @@ label {
 .warning {
   color: red;
 }
+.warningUser {
+  margin-top: 50px;
+  text-align: center;
+}
 button {
   padding: 8px;
   outline: none;

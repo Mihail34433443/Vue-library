@@ -5,6 +5,7 @@
     <p class="book_library">Библиотека: {{ book.library }}</p>
     <p class="book_price">Цена: {{ book.price }}$</p>
     <button @click="orderBook">Заказать</button>
+    <button @click="addLocalStorage">в желаемое</button>
   </div>
 </template>
 
@@ -37,6 +38,24 @@ export default {
         availability: false,
       });
       alert("Книга заказана");
+    },
+    addLocalStorage() {
+      var desired = localStorage.getItem("desired");
+      if (desired == null) {
+        var desired = {
+          id: [this.$route.query.book],
+        };
+      } else {
+        desired = JSON.parse(desired);
+        desired.id.push(this.$route.query.book);
+      }
+
+      console.log(desired);
+
+      localStorage.setItem("desired", JSON.stringify(desired));
+      var info = localStorage.getItem("desired");
+      info = JSON.parse(info);
+      console.log(info.id);
     },
   },
   created() {
