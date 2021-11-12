@@ -67,7 +67,7 @@ export default {
       }
       return reply; 
     },
-  },
+  },//
   created() {
     firebase
       .firestore()
