@@ -7,6 +7,12 @@
         <input class="input_addbook" name="name" placeholder="название" />
         <input class="input_addbook" name="price" placeholder="стоимость" />
         <input class="input_addbook" name="library" placeholder="библиотека" />
+        <input
+          class="input_addbook"
+          name="qty"
+          placeholder="кол-во"
+          type="number"
+        />
         <button @click="addBook">добавить книгу</button>
       </div>
     </form>
@@ -32,12 +38,13 @@ export default {
         name: form.name.value,
         price: form.price.value,
         library: form.library.value,
+        qty: form.qty.value,
         availability: true,
       });
     },
   },
   created() {
-    console.log(this.$store.getters.info.role)
+    console.log(this.$store.getters.info.role);
     // доделать селект выбора библиотеки (осталось вывести)
     firebase
       .firestore()

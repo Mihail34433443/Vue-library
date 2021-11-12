@@ -6,12 +6,12 @@
       </li>
       <li v-if="this.$store.getters.info.role == 'admin'">
         <router-link class="header_link" :to="'/orders'"
-          >Заказы (админ)</router-link
+          >Заказы</router-link
         >
       </li>
       <li v-if="this.$store.getters.info.role == 'admin'">
         <router-link class="header_link" :to="'/addBook'"
-          >Добавить книгу (админ)</router-link
+          >Добавить книгу</router-link
         >
       </li>
     </ul>

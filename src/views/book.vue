@@ -4,7 +4,8 @@
     <p class="book_author">Автор: {{ book.author }}</p>
     <p class="book_library">Библиотека: {{ book.library }}</p>
     <p class="book_price">Цена: {{ book.price }}$</p>
-    <button @click="orderBook">Заказать</button>
+    <p class="book_qty">Кол-во {{ book.qty }}</p>
+    <input type="number" v-model="qty" />
     <button @click="addLocalStorage">в желаемое</button>
   </div>
 </template>
@@ -17,17 +18,13 @@ export default {
   data() {
     return {
       book: {
-        id: "",
         name: "",
-        author: "",
-        library: "",
-        price: "",
-        availability: "",
       },
+      qty: 1,
     };
   },
   methods: {
-    orderBook() {
+    /*orderBook() {
       firebase.firestore().collection("order").add({
         book: this.book.id,
         addDate: "",
@@ -38,18 +35,30 @@ export default {
         availability: false,
       });
       alert("Книга заказана");
-    },
+    },*/
     addLocalStorage() {
       var desired = localStorage.getItem("desired");
       if (desired == null) {
         var desired = {
-          id: [this.$route.query.book],
+          arrayDesired: [
+            {
+              id: this.$route.query.book,
+              qty: this.qty,
+            },
+          ],
         };
       } else {
         desired = JSON.parse(desired);
-        if (this.checkDesired(desired.id, this.$route.query.book)) {
-          desired.id.push(this.$route.query.book);
-        }
+        if (this.checkDesired(desired.arrayDesired, this.book.id)) {
+          this.book.qty = this.book.qty - this.qty;
+          if (this.book.qty >= 0) {
+            desired.arrayDesired.push({
+              id: this.book.id,
+              qty: this.qty,
+            });
+          }
+          else {}
+        } else {}
       }
 
       localStorage.setItem("desired", JSON.stringify(desired));
@@ -57,18 +66,17 @@ export default {
       info = JSON.parse(info);
     },
     checkDesired(array, id) {
-      let reply = true;
+      let reply = false;
       for (var i = 0; i < array.length; i++) {
-        console.log(array)
-        console.log(array[i])
         if (array[i] == id) {
-          reply = false;
+          reply = true;
+          break;
         }
       }
-      return reply; 
+      return reply;
     },
-  },//
-  created() {
+  },
+  mounted() {
     firebase
       .firestore()
       .collection("books")
@@ -82,6 +90,7 @@ export default {
           this.book.library = doc.data().library;
           this.book.price = doc.data().price;
           this.book.availability = doc.data().availability;
+          this.book.qty = doc.data().qty;
         } else {
           console.log("такой книги нет");
         }

@@ -31,6 +31,7 @@
         v-model.trim="reg_phone"
       />
       <button type="submit">зарегистрироваться</button>
+      <router-link to="/login">войти</router-link>
     </div>
   </form>
 </template>
