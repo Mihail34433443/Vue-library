@@ -37,7 +37,7 @@ export default {
   },
   async created() {
     await firebase
-      .firestore()
+      .firestore() 
       .collection("order")
       .doc(this.$route.query.order)
       .get()
