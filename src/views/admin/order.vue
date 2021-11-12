@@ -35,10 +35,8 @@ export default {
       alert("Книга заказана"); */
     },
   },
-  created() {
-    //проблема с тем что 1-ый запрос из firebase не успевает
-    //подгрузиться как начинает запускаться 2-ой (отложено)
-    firebase
+  async created() {
+    await firebase
       .firestore()
       .collection("order")
       .doc(this.$route.query.order)
@@ -54,22 +52,24 @@ export default {
           console.log("такой книги нет");
         }
       });
-    firebase
-      .firestore()
-      .collection("books")
-      .doc(this.order.book)
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          this.book.id = doc.id;
-          this.book.author = doc.data().author;
-          this.book.library = doc.data().library;
-          this.book.price = doc.data().price;
-          this.book.availability = doc.data().availability;
-        } else {
-          console.log("такой книги нет");
-        }
-      });
+    if (this.order.book) {
+      firebase
+        .firestore()
+        .collection("books")
+        .doc(this.order.book)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            this.book.id = doc.id;
+            this.book.author = doc.data().author;
+            this.book.library = doc.data().library;
+            this.book.price = doc.data().price;
+            this.book.availability = doc.data().availability;
+          } else {
+            console.log("такой книги нет");
+          }
+        });
+    }
   },
 };
 </script>

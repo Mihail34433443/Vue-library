@@ -47,15 +47,25 @@ export default {
         };
       } else {
         desired = JSON.parse(desired);
-        desired.id.push(this.$route.query.book);
+        if (this.checkDesired(desired.id, this.$route.query.book)) {
+          desired.id.push(this.$route.query.book);
+        }
       }
-
-      console.log(desired);
 
       localStorage.setItem("desired", JSON.stringify(desired));
       var info = localStorage.getItem("desired");
       info = JSON.parse(info);
-      console.log(info.id);
+    },
+    checkDesired(array, id) {
+      let reply = true;
+      for (var i = 0; i < array.length; i++) {
+        console.log(array)
+        console.log(array[i])
+        if (array[i] == id) {
+          reply = false;
+        }
+      }
+      return reply;
     },
   },
   created() {
