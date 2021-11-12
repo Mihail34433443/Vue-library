@@ -56,7 +56,7 @@ export default {
       var info = localStorage.getItem("desired");
       info = JSON.parse(info);
     },
-    checkDesired(array, id) {
+    checkDesired(array, id) { 
       let reply = true;
       for (var i = 0; i < array.length; i++) {
         console.log(array)
