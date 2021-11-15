@@ -1,0 +1,31 @@
+.changeBook {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.addBook {
+  margin-top: 40px;
+}
+.changeBook {
+  margin-top: 40px;
+}
+.container_Book {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.input_book {
+  margin: 10px 0;
+  padding: 5px;
+}
+.container_availabilityCheckbox {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 10px 0;
+}
+.container_availabilityCheckbox label {
+  margin-left: 10px;
+}

@@ -36,6 +36,18 @@ const routes = [
     component: () => import('../views/book.vue')
   },
   {
+    path: '/changeBook',
+    name: 'changeBook',
+    meta: { layout: 'main'},
+    component: () => import('../views/admin/changeBook.vue')
+  },
+  {
+    path: '/cart',
+    name: 'cart',
+    meta: { layout: 'main'},
+    component: () => import('../views/cart.vue')
+  },
+  {
     path: '/orders',
     name: 'orders',
     meta: { layout: 'main'},

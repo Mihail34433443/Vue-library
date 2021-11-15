@@ -6,6 +6,7 @@
       :key="book.id"
       v-bind:book_data="book"
       @bookClick="bookClick"
+      @deleteBook="deleteBook"
     />
   </div>
 </template>
@@ -26,7 +27,26 @@ export default {
   },
   methods: {
     bookClick(id) {
-      this.$router.push({ name: "book", query: { book: id } });
+      if (this.$store.getters.info.role != "admin") {
+        this.$router.push({ name: "book", query: { book: id } });
+      }
+      else {
+        this.$router.push({ name: "changeBook", query: { book: id } });
+      }
+    },
+    deleteBook(id) {
+      db.collection("books")
+        .doc(id)
+        .delete()
+        .then(() => {
+          console.log("книга удалена");
+        });
+      for (var i = 0; i < this.books.length; i++) {
+        if (this.books[i].id == id) {
+          this.books.splice(i, 1);
+          break;
+        }
+      }
     },
   },
   created() {
@@ -41,6 +61,7 @@ export default {
             price: doc.data().price,
             library: doc.data().library,
             availability: doc.data().availability,
+            qty: doc.data().qty,
           });
         });
       });

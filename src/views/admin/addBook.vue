@@ -2,13 +2,13 @@
   <div class="addBook" v-if="this.$store.getters.info.role === 'admin'">
     <h1 class="title">ДОБАВИТЬ КНИГУ</h1>
     <form name="addBook" onsubmit="return false;">
-      <div class="container_addBook">
-        <input class="input_addbook" name="author" placeholder="автор" />
-        <input class="input_addbook" name="name" placeholder="название" />
-        <input class="input_addbook" name="price" placeholder="стоимость" />
-        <input class="input_addbook" name="library" placeholder="библиотека" />
+      <div class="container_Book">
+        <input class="input_book" name="author" placeholder="автор" />
+        <input class="input_book" name="name" placeholder="название" />
+        <input class="input_book" name="price" placeholder="стоимость" />
+        <input class="input_book" name="library" placeholder="библиотека" />
         <input
-          class="input_addbook"
+          class="input_book"
           name="qty"
           placeholder="кол-во"
           type="number"

@@ -7,11 +7,15 @@
     <p class="book_qty">Кол-во {{ book.qty }}</p>
     <input type="number" v-model="qty" />
     <button @click="addLocalStorage">в желаемое</button>
+    <button @click="test">test</button>
   </div>
 </template>
 
 <script>
 import firebase from "firebase/compat/app";
+import Vue from "vue";
+import Toast from "vue-easy-toast";
+Vue.use(Toast);
 
 export default {
   name: "book",
@@ -19,11 +23,15 @@ export default {
     return {
       book: {
         name: "",
+        qty: 0,
       },
       qty: 1,
     };
   },
   methods: {
+    test() {
+      Vue.toast("Предупреждение!!!");
+    },
     /*orderBook() {
       firebase.firestore().collection("order").add({
         book: this.book.id,
@@ -50,15 +58,28 @@ export default {
       } else {
         desired = JSON.parse(desired);
         if (this.checkDesired(desired.arrayDesired, this.book.id)) {
+          for (var i = 0; i < desired.arrayDesired.length; i++) {
+            if (desired.arrayDesired[i].id == this.book.id) {
+              this.book.qty = this.book.qty - this.qty;
+              if (this.book.qty >= 0) {
+                desired.arrayDesired[i].qty =
+                  desired.arrayDesired[i].qty + Number(this.qty);
+              } else {
+                this.book.qty = this.book.qty + Number(this.qty);
+              }
+            }
+          }
+        } else {
           this.book.qty = this.book.qty - this.qty;
           if (this.book.qty >= 0) {
             desired.arrayDesired.push({
               id: this.book.id,
               qty: this.qty,
             });
+          } else {
+            this.book.qty = this.book.qty + this.qty;
           }
-          else {}
-        } else {}
+        }
       }
 
       localStorage.setItem("desired", JSON.stringify(desired));
@@ -68,7 +89,7 @@ export default {
     checkDesired(array, id) {
       let reply = false;
       for (var i = 0; i < array.length; i++) {
-        if (array[i] == id) {
+        if (array[i].id == id) {
           reply = true;
           break;
         }

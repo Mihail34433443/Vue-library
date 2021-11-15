@@ -25,4 +25,5 @@ export default {
 
 <style>
 @import "assets/style.css";
+@import "assets/admin.css";
 </style>

@@ -93,6 +93,9 @@ header {
   padding: 0 10px 0 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
+.login_bar {
+  display: flex;
+}
 .search-bar {
   margin-top: 30px;
   display: flex;
@@ -136,24 +139,10 @@ footer {
   justify-content: space-between;
   align-items: center;
 }
-.addBook {
-  margin-top: 40px;
-}
-.container_addBook {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-}
-
-.input_addbook {
-  margin: 10px;
-  padding: 5px;
-}
 
 .book {
   margin: 0 40px;
 }
-
 
 .windowDone {
   position: fixed;

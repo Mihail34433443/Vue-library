@@ -5,9 +5,7 @@
         <router-link class="header_link" :to="'/'">Главная</router-link>
       </li>
       <li v-if="this.$store.getters.info.role == 'admin'">
-        <router-link class="header_link" :to="'/orders'"
-          >Заказы</router-link
-        >
+        <router-link class="header_link" :to="'/orders'">Заказы</router-link>
       </li>
       <li v-if="this.$store.getters.info.role == 'admin'">
         <router-link class="header_link" :to="'/addBook'"
@@ -16,6 +14,9 @@
       </li>
     </ul>
     <div class="login_bar">
+      <div>
+        <router-link :to="'/cart'"><button>Корзина</button></router-link>
+      </div>
       <div
         v-if="this.$store.getters.info.role != undefined"
         class="container_logout"
