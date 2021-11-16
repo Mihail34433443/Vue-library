@@ -2,7 +2,7 @@
   <div class="cart-item">
     <div class="container_cartItem">
       {{ book_data.name }}
-      <button @click="bookClick">открыть</button>
+      {{ book_data.qty }}
     </div>
   </div>
 </template>
@@ -15,11 +15,6 @@ export default {
       default() {
         return {};
       },
-    },
-  },
-  methods: {
-    bookClick() {
-      this.$emit("bookClick", this.book_data.id);
     },
   },
 };

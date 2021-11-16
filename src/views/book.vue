@@ -17,6 +17,8 @@ import Vue from "vue";
 import Toast from "vue-easy-toast";
 Vue.use(Toast);
 
+import { getQty } from "../helpers/qtyHelper";
+
 export default {
   name: "book",
   data() {
@@ -32,6 +34,8 @@ export default {
     test() {
       Vue.toast("Предупреждение!!!");
     },
+    getQty: getQty,
+
     /*orderBook() {
       firebase.firestore().collection("order").add({
         book: this.book.id,
@@ -97,8 +101,8 @@ export default {
       return reply;
     },
   },
-  mounted() {
-    firebase
+  async created() {
+    await firebase
       .firestore()
       .collection("books")
       .doc(this.$route.query.book)
@@ -116,6 +120,7 @@ export default {
           console.log("такой книги нет");
         }
       });
+    this.book.qty = getQty(this.book.id, this.book.qty)
   },
 };
 </script>

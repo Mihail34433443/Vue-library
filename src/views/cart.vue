@@ -1,11 +1,17 @@
 <template>
   <div class="cart">
     <h1 class="title">КОРЗИНА</h1>
+    <cartItem
+      v-for="book in books"
+      :key="book.id"
+      v-bind:book_data="book"
+    />
   </div>
 </template>
 
 <script>
 import firebase from "firebase/compat/app";
+import cartItem from '../components/cart-item.vue'
 
 export default {
   data() {
@@ -13,12 +19,15 @@ export default {
       books: [],
     };
   },
+  components: {
+    cartItem
+  },
   created() {
     if (this.$store.getters.info.role == undefined) {
       var desired = localStorage.getItem("desired");
       if (desired != null) {
         desired = JSON.parse(desired);
-        for (var i = 0; i < desired.arrayDesired.length; i++) {
+        for (let i = 0; i < desired.arrayDesired.length; i++) {
           console.log(i);
           firebase
             .firestore()
@@ -34,7 +43,7 @@ export default {
                   price: doc.data().price,
                   library: doc.data().library,
                   availability: doc.data().availability,
-                  qty: desired.arrayDesired[0].qty, //спросить почему не понимает что такое [i]
+                  qty: desired.arrayDesired[i].qty,
                 });
               }
             });

@@ -1,50 +1,31 @@
 <template>
   <div class="changeBook" v-if="this.$store.getters.info.role === 'admin'">
     <h1 class="title">ИЗМЕНИТЬ КНИГУ</h1>
-    <form name="changeBook" onsubmit="return false;">
-      <div class="container_Book">
+    <div class="container_Book">
+      <input class="input_book" placeholder="название" v-model="book.name" />
+      <input class="input_book" placeholder="автор" v-model="book.author" />
+      <select class="input_book" v-model="book.library">
+        <option v-for="item in library" :selected="book.library == item" v-bind:value="item.name" :key="item.id">
+          {{ item.name }}
+        </option>
+      </select>
+      <input class="input_book" placeholder="стоимость" v-model="book.price" />
+      <input
+        class="input_book"
+        placeholder="кол-во"
+        v-model="book.qty"
+        type="number"
+      />
+      <div class="container_availabilityCheckbox">
         <input
-          class="input_book"
-          name="name"
-          placeholder="название"
-          v-model="book.name"
+          id="availability_checkbox"
+          type="checkbox"
+          v-model="book.availability"
         />
-        <input
-          class="input_book"
-          name="author"
-          placeholder="автор"
-          v-model="book.author"
-        />
-        <input
-          class="input_book"
-          name="library"
-          placeholder="библиотека"
-          v-model="book.library"
-        />
-        <input
-          class="input_book"
-          name="price"
-          placeholder="стоимость"
-          v-model="book.price"
-        />
-        <input
-          class="input_book"
-          name="qty"
-          placeholder="кол-во"
-          v-model="book.qty"
-          type="number"
-        />
-        <div class="container_availabilityCheckbox">
-          <input
-            id="availability_checkbox"
-            type="checkbox"
-            v-model="book.availability"
-          />
-          <label for="availability_checkbox">Наличие</label>
-        </div>
-        <button @click="changeBook">изменить книгу</button>
+        <label for="availability_checkbox">Наличие</label>
       </div>
-    </form>
+      <button @click="changeBook">изменить книгу</button>
+    </div>
   </div>
   <h1 class="warningUser" v-else>Вам не доступен данный контент</h1>
 </template>
@@ -57,18 +38,27 @@ export default {
   data() {
     return {
       book: {
+        id: "",
         name: "",
-        author: '',
+        author: "",
         availability: true,
         library: "",
         price: "",
         qty: 0,
       },
+      library: [],
     };
   },
   methods: {
     changeBook() {
-      console.log(123);
+      firebase.firestore().collection("books").doc(this.book.id).set({
+        name: this.book.name,
+        author: this.book.author,
+        availability: this.book.availability,
+        library: this.book.library,
+        price: this.book.price,
+        qty: this.book.qty,
+      });
     },
   },
   mounted() {
@@ -89,6 +79,20 @@ export default {
         } else {
           console.log("такой книги нет");
         }
+      });
+    firebase
+      .firestore()
+      .collection("library")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          this.library.push({
+            id: doc.id,
+            active_time: doc.data().active_time,
+            address: doc.data().address,
+            name: doc.data().name,
+          });
+        });
       });
   },
 };

@@ -1,5 +1,10 @@
 <template>
-  <div class="catalog-item">
+  <div
+    class="catalog-item"
+    v-if="
+      book_data.availability == true || this.$store.getters.info.role == 'admin'
+    "
+  >
     <div class="container_catalogItem">
       {{ book_data.name }}
       <div>
@@ -16,7 +21,6 @@
 </template>
 
 <script>
-
 export default {
   name: "catalog-item",
   props: {

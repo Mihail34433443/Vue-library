@@ -1,10 +1,12 @@
 import firebase from "firebase/compat/app"
+import { transferInCart } from "../helpers/localStorageLogin"
 
 export default {
   actions: {
     async login({ dispatch, commit }, { email, password }) {
       try {
         await firebase.auth().signInWithEmailAndPassword(email, password)
+        await transferInCart()
       } catch (e) {
         console.log(e)
         throw e

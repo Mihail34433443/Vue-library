@@ -1,21 +1,35 @@
 <template>
   <div class="addBook" v-if="this.$store.getters.info.role === 'admin'">
     <h1 class="title">ДОБАВИТЬ КНИГУ</h1>
-    <form name="addBook" onsubmit="return false;">
-      <div class="container_Book">
-        <input class="input_book" name="author" placeholder="автор" />
-        <input class="input_book" name="name" placeholder="название" />
-        <input class="input_book" name="price" placeholder="стоимость" />
-        <input class="input_book" name="library" placeholder="библиотека" />
+    <div class="container_Book">
+      <input class="input_book" placeholder="автор" v-model="newBook.author" />
+      <input class="input_book" placeholder="название" v-model="newBook.name" />
+      <input
+        class="input_book"
+        placeholder="стоимость"
+        v-model="newBook.price"
+      />
+      <select class="input_book" v-model="newBook.library">
+        <option v-for="item in library" v-bind:value="item.name" :key="item.id">
+          {{ item.name }}
+        </option>
+      </select>
+      <input
+        class="input_book"
+        placeholder="кол-во"
+        v-model="newBook.qty"
+        type="number"
+      />
+      <div class="container_availabilityCheckbox">
         <input
-          class="input_book"
-          name="qty"
-          placeholder="кол-во"
-          type="number"
+          id="availability_checkbox"
+          type="checkbox"
+          v-model="newBook.availability"
         />
-        <button @click="addBook">добавить книгу</button>
+        <label for="availability_checkbox">Наличие</label>
       </div>
-    </form>
+      <button @click="addBook">добавить книгу</button>
+    </div>
   </div>
   <h1 class="warningUser" v-else>Вам не доступен данный контент</h1>
 </template>
@@ -27,25 +41,30 @@ export default {
   name: "addBook",
   data() {
     return {
+      newBook: {
+        author: "",
+        name: "",
+        price: "",
+        library: "",
+        qty: '',
+        availability: false,
+      },
       library: [],
     };
   },
   methods: {
     addBook() {
-      let form = document.forms.addBook.elements;
       firebase.firestore().collection("books").add({
-        author: form.author.value,
-        name: form.name.value,
-        price: form.price.value,
-        library: form.library.value,
-        qty: form.qty.value,
-        availability: true,
+        author: this.newBook.author,
+        name: this.newBook.name,
+        price: this.newBook.price,
+        library: this.newBook.library,
+        qty: Number(this.newBook.qty),
+        availability: this.newBook.availability,
       });
     },
   },
   created() {
-    console.log(this.$store.getters.info.role);
-    // доделать селект выбора библиотеки (осталось вывести)
     firebase
       .firestore()
       .collection("library")
