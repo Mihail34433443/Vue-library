@@ -1,4 +1,5 @@
 import firebase from "firebase/compat/app"
+import { transferInCart } from "../helpers/localStorageLogin"
 
 export default {
   state: {
@@ -24,6 +25,9 @@ export default {
             role: doc.data().role,
           }
           commit('setInfo', info)
+          if (info.role === 'user') {
+            transferInCart(info.id, info.role)
+          }
         })
       })
     }

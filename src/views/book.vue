@@ -6,8 +6,15 @@
     <p class="book_price">Цена: {{ book.price }}$</p>
     <p class="book_qty">Кол-во {{ book.qty }}</p>
     <input type="number" v-model="qty" />
-    <button @click="addLocalStorage">в желаемое</button>
-    <button @click="test">test</button>
+    <button
+      v-if="this.$store.getters.info.role == undefined"
+      @click="addLocalStorage"
+    >
+      в корзину
+    </button>
+    <button v-if="this.$store.getters.info.role == 'user'" @click="addCart">
+      в корзину
+    </button>
   </div>
 </template>
 
@@ -35,19 +42,40 @@ export default {
       Vue.toast("Предупреждение!!!");
     },
     getQty: getQty,
-
-    /*orderBook() {
-      firebase.firestore().collection("order").add({
-        book: this.book.id,
-        addDate: "",
-        dropDate: "",
-        user: this.$store.getters.info.id,
-      });
-      firebase.firestore().collection("books").doc(this.book.id).update({
-        availability: false,
-      });
-      alert("Книга заказана");
-    },*/
+    addCart() {
+      if (this.book.qty - this.qty >= 0) {
+        firebase
+          .firestore()
+          .collection("cart")
+          .where("user", "==", this.$store.getters.info.id)
+          .where("book", "==", this.book.id)
+          .get()
+          .then((querySnapshot) => {
+            console.log(querySnapshot);
+            querySnapshot.docs.forEach((doc) => {
+              if (doc) {
+                firebase
+                  .firestore()
+                  .collection("cart")
+                  .doc(doc.id)
+                  .update({
+                    qty: doc.data().qty + this.qty,
+                  });
+              }
+            });
+            if (!querySnapshot.docs.length) {
+              firebase.firestore().collection("cart").add({
+                book: this.book.id,
+                user: this.$store.getters.info.id,
+                qty: this.qty,
+              });
+            }
+          });
+        this.book.qty = this.book.qty - this.qty;
+      } else {
+        console.log("Товар закончился");
+      }
+    },
     addLocalStorage() {
       var desired = localStorage.getItem("desired");
       if (desired == null) {
@@ -120,7 +148,7 @@ export default {
           console.log("такой книги нет");
         }
       });
-    this.book.qty = getQty(this.book.id, this.book.qty)
+    this.book.qty = getQty(this.book.id, this.book.qty);
   },
 };
 </script>

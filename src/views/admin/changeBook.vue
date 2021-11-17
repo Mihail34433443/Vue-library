@@ -57,7 +57,7 @@ export default {
         availability: this.book.availability,
         library: this.book.library,
         price: this.book.price,
-        qty: this.book.qty,
+        qty: Number(this.book.qty),
       });
     },
   },

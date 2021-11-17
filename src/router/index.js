@@ -8,13 +8,13 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    meta: { layout: 'empty'},
+    meta: { layout: 'empty', auth: false},
     component: () => import('../views/login.vue')
   },
   {
     path: '/registration',
     name: 'registration',
-    meta: { layout: 'empty'},
+    meta: { layout: 'empty', auth: false},
     component: () => import('../views/registration.vue')
   },
   {
@@ -38,7 +38,7 @@ const routes = [
   {
     path: '/changeBook',
     name: 'changeBook',
-    meta: { layout: 'main'},
+    meta: { layout: 'main', auth: true, view: 'admin'},
     component: () => import('../views/admin/changeBook.vue')
   },
   {
@@ -50,19 +50,19 @@ const routes = [
   {
     path: '/orders',
     name: 'orders',
-    meta: { layout: 'main'},
+    meta: { layout: 'main', auth: true, view: 'admin'},
     component: () => import('../views/admin/orders.vue')
   },
   {
     path: '/order',
     name: 'order',
-    meta: { layout: 'main'},
+    meta: { layout: 'main', auth: true, view: 'admin'},
     component: () => import('../views/admin/order.vue')
   },
   {
     path: '/addBook',
     name: 'addBook',
-    meta: { layout: 'main'},
+    meta: { layout: 'main', auth: true, view: 'admin'},
     component: () => import('../views/admin/addBook.vue')
   },
   {
@@ -82,8 +82,7 @@ const router = new VueRouter({
 // to - куда, from - откуда, next - пропустить куда либо
 router.beforeEach((to, from, next) => {
   const currentUser = firebase.auth().currentUser
-  const requireAuth = to.matched.some(record => record.meta.auth)
-  //const requireAdmin = to.matched.some(record => record.meta.admin)
+  const requireAuth = to.matched.some(record => !!record.meta.auth)
 
   if (requireAuth && !currentUser) {
     next('/login')
@@ -91,14 +90,6 @@ router.beforeEach((to, from, next) => {
   else {
     next()
   }
-  /*
-  if (requireAdmin && this.$store.getters.info.role == 'admin') {
-    next()
-  }
-  else {
-    next('/')
-  }
-  */
 })
 
 export default router
