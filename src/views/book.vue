@@ -19,12 +19,12 @@
 </template>
 
 <script>
-import firebase from "firebase/compat/app";
 import Vue from "vue";
 import Toast from "vue-easy-toast";
 Vue.use(Toast);
 
 import { getQty } from "../helpers/qtyHelper";
+import { addCart, openBook } from "../services/bookService";
 
 export default {
   name: "book",
@@ -44,33 +44,7 @@ export default {
     getQty: getQty,
     addCart() {
       if (this.book.qty - this.qty >= 0) {
-        firebase
-          .firestore()
-          .collection("cart")
-          .where("user", "==", this.$store.getters.info.id)
-          .where("book", "==", this.book.id)
-          .get()
-          .then((querySnapshot) => {
-            console.log(querySnapshot);
-            querySnapshot.docs.forEach((doc) => {
-              if (doc) {
-                firebase
-                  .firestore()
-                  .collection("cart")
-                  .doc(doc.id)
-                  .update({
-                    qty: doc.data().qty + this.qty,
-                  });
-              }
-            });
-            if (!querySnapshot.docs.length) {
-              firebase.firestore().collection("cart").add({
-                book: this.book.id,
-                user: this.$store.getters.info.id,
-                qty: this.qty,
-              });
-            }
-          });
+        addCart(this);
         this.book.qty = this.book.qty - this.qty;
       } else {
         console.log("Товар закончился");
@@ -130,24 +104,7 @@ export default {
     },
   },
   async created() {
-    await firebase
-      .firestore()
-      .collection("books")
-      .doc(this.$route.query.book)
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          this.book.id = doc.id;
-          this.book.name = doc.data().name;
-          this.book.author = doc.data().author;
-          this.book.library = doc.data().library;
-          this.book.price = doc.data().price;
-          this.book.availability = doc.data().availability;
-          this.book.qty = doc.data().qty;
-        } else {
-          console.log("такой книги нет");
-        }
-      });
+    await openBook(this);
     this.book.qty = getQty(this.book.id, this.book.qty);
   },
 };

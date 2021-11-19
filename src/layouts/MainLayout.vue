@@ -1,6 +1,7 @@
 <template>
   <div>
     <Header />
+    <Notification />
     
     <main class="app-content">
       <div class="app-page">
@@ -15,6 +16,7 @@
 <script>
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import Notification from '@/components/notification'
 
 import firebase from 'firebase/compat/app'
 
@@ -30,6 +32,7 @@ export default {
   components: {
     Header,
     Footer,
+    Notification,
   },
 };
 </script>

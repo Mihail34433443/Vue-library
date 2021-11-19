@@ -6,13 +6,15 @@
       :key="order.id"
       v-bind:order_data="order"
       @orderClick="orderClick"
+      @deleteOrder="deleteOrder"
     />
   </div>
 </template>
 
 <script>
-import firebase from "firebase/compat/app";
-import catalogItem from "./order-catalog-item";
+import catalogItem from "./ordersCatalogItem";
+
+import { getOrders, deleteOrder } from "../../services/bookService";
 
 export default {
   name: "catalog",
@@ -25,26 +27,21 @@ export default {
     };
   },
   methods: {
+    deleteOrder(id) {
+      deleteOrder(id);
+      for (var i = 0; i < this.orders.length; i++) {
+        if (this.orders[i].id == id) {
+          this.orders.splice(i, 1);
+          break;
+        }
+      }
+    },
     orderClick(id) {
       this.$router.push({ name: "order", query: { order: id } });
     },
   },
   created() {
-    firebase
-      .firestore()
-      .collection("order")
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          this.orders.push({
-            id: doc.id,
-            addDate: doc.data().addDate,
-            book: doc.data().book,
-            dropDate: doc.data().dropDate,
-            user: doc.data().user,
-          });
-        });
-      });
+    getOrders(this)
   },
 };
 </script>

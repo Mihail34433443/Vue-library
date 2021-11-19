@@ -28,6 +28,7 @@ export default {
           if (info.role === 'user') {
             transferInCart(info.id, info.role)
           }
+          localStorage.setItem('role', info.role)
         })
       })
     }

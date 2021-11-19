@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 import auth from './auth'
 import info from './user-info'
+import messages from './messages'
 
 Vue.use(Vuex)
 
@@ -13,5 +14,6 @@ export default new Vuex.Store({
   modules: {
     auth,
     info,
+    messages,
   },
 })

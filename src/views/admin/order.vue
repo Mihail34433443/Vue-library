@@ -1,25 +1,23 @@
 <template>
-  <div class="order" v-if="this.$store.getters.info.role === 'admin'">
-    <h1 class="title">{{ order.name }}</h1>
-    <p class="book_author">Автор: {{ order.author }}</p>
-    <p class="book_library">Библиотека: {{ order.library }}</p>
-    <p class="book_price">Цена: {{ order.price }}$</p>
+  <div class="order">
+    <orderItem v-for="book in books" :key="book.id" v-bind:book_data="book" />
     <button @click="orderBook">Одобрить</button>
   </div>
-  <h1 class="warningUser" v-else>Вам не доступен данный контент</h1>
 </template>
 
 <script>
+import orderItem from '../../components/admin/orderItem.vue'
 import firebase from "firebase/compat/app";
 
 export default {
   name: "order",
   data() {
     return {
-      order: {},
-      book: {},
-      user: {},
+      books: {},
     };
+  },
+  components: {
+    orderItem,
   },
   methods: {
     orderBook() {
@@ -52,24 +50,6 @@ export default {
           console.log("такой книги нет");
         }
       });
-    if (this.order.book) {
-      firebase
-        .firestore()
-        .collection("books")
-        .doc(this.order.book)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            this.book.id = doc.id;
-            this.book.author = doc.data().author;
-            this.book.library = doc.data().library;
-            this.book.price = doc.data().price;
-            this.book.availability = doc.data().availability;
-          } else {
-            console.log("такой книги нет");
-          }
-        });
-    }
   },
 };
 </script>

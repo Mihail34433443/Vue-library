@@ -1,5 +1,5 @@
 <template>
-  <div class="addBook" v-if="this.$store.getters.info.role === 'admin'">
+  <div class="addBook">
     <h1 class="title">ДОБАВИТЬ КНИГУ</h1>
     <div class="container_Book">
       <input class="input_book" placeholder="автор" v-model="newBook.author" />
@@ -31,11 +31,10 @@
       <button @click="addBook">добавить книгу</button>
     </div>
   </div>
-  <h1 class="warningUser" v-else>Вам не доступен данный контент</h1>
 </template>
 
 <script>
-import firebase from "firebase/compat/app";
+import { addBook, getLibrary } from '../../services/bookService';
 
 export default {
   name: "addBook",
@@ -46,7 +45,7 @@ export default {
         name: "",
         price: "",
         library: "",
-        qty: '',
+        qty: "",
         availability: false,
       },
       library: [],
@@ -54,31 +53,11 @@ export default {
   },
   methods: {
     addBook() {
-      firebase.firestore().collection("books").add({
-        author: this.newBook.author,
-        name: this.newBook.name,
-        price: this.newBook.price,
-        library: this.newBook.library,
-        qty: Number(this.newBook.qty),
-        availability: this.newBook.availability,
-      });
+      addBook(this)
     },
   },
   created() {
-    firebase
-      .firestore()
-      .collection("library")
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          this.library.push({
-            id: doc.id,
-            active_time: doc.data().active_time,
-            address: doc.data().address,
-            name: doc.data().name,
-          });
-        });
-      });
+    getLibrary(this)
   },
 };
 </script>

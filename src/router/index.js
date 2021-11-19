@@ -8,19 +8,19 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    meta: { layout: 'empty', auth: false},
+    meta: { layout: 'empty', auth: false },
     component: () => import('../views/login.vue')
   },
   {
     path: '/registration',
     name: 'registration',
-    meta: { layout: 'empty', auth: false},
+    meta: { layout: 'empty', auth: false },
     component: () => import('../views/registration.vue')
   },
   {
     path: '/',
     name: 'home',
-    meta: { layout: 'main'},
+    meta: { layout: 'main' },
     component: () => import('../views/Home.vue')
   },
   {
@@ -32,44 +32,50 @@ const routes = [
   {
     path: '/book',
     name: 'book',
-    meta: { layout: 'main'},
+    meta: { layout: 'main' },
     component: () => import('../views/book.vue')
   },
   {
     path: '/changeBook',
     name: 'changeBook',
-    meta: { layout: 'main', auth: true, view: 'admin'},
+    meta: { layout: 'main', auth: true, view: 'admin' },
     component: () => import('../views/admin/changeBook.vue')
   },
   {
     path: '/cart',
     name: 'cart',
-    meta: { layout: 'main'},
+    meta: { layout: 'main' },
     component: () => import('../views/cart.vue')
   },
   {
     path: '/orders',
     name: 'orders',
-    meta: { layout: 'main', auth: true, view: 'admin'},
+    meta: { layout: 'main', auth: true, view: 'admin' },
     component: () => import('../views/admin/orders.vue')
   },
   {
     path: '/order',
     name: 'order',
-    meta: { layout: 'main', auth: true, view: 'admin'},
+    meta: { layout: 'main', auth: true, view: 'admin' },
     component: () => import('../views/admin/order.vue')
   },
   {
     path: '/addBook',
     name: 'addBook',
-    meta: { layout: 'main', auth: true, view: 'admin'},
+    meta: { layout: 'main', auth: true, view: 'admin' },
     component: () => import('../views/admin/addBook.vue')
   },
   {
     path: '/search',
     name: 'search',
-    meta: { layout: 'main'},
+    meta: { layout: 'main' },
     component: () => import('../views/search.vue')
+  },
+  {
+    path: '/accessError',
+    name: 'accessError',
+    meta: { layout: 'main' },
+    component: () => import('../views/accessError.vue')
   },
 ]
 
@@ -84,10 +90,26 @@ router.beforeEach((to, from, next) => {
   const currentUser = firebase.auth().currentUser
   const requireAuth = to.matched.some(record => !!record.meta.auth)
 
-  if (requireAuth && !currentUser) {
-    next('/login')
-  }
-  else {
+  if (to.matched.some(record => record.meta.auth)) {
+    console.log(localStorage.getItem('role'))
+    if (localStorage.getItem('role') == null) {
+      next({
+        path: '/accessError',
+        params: { nextUrl: to.fullPath }
+      })
+    } else {
+      let user = localStorage.getItem('role')
+      if (to.matched.some(record => record.meta.view)) {
+        if (user == 'admin') {
+          next()
+        } else {
+          next({ path: '/accessError' })
+        }
+      } else {
+        next()
+      }
+    }
+  } else {
     next()
   }
 })

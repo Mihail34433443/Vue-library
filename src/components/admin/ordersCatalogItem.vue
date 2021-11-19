@@ -1,15 +1,16 @@
 <template>
-  <div class="order-catalog-item">
+  <div class="ordersCatalogItem">
     <div class="container_catalogItem">
-      {{ order_data.book }}
+      {{ order_data.id }}
       <button @click="orderClick">открыть</button>
+      <button @click="deleteOrder">удалить</button>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "order-catalog-item",
+  name: "ordersCatalogItem",
   props: {
     order_data: {
       type: Object,
@@ -21,6 +22,9 @@ export default {
   methods: {
     orderClick() {
       this.$emit("orderClick", this.order_data.id);
+    },
+    deleteOrder() {
+      this.$emit("deleteOrder", this.order_data.id);
     },
   },
 };

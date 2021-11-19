@@ -1,7 +1,6 @@
 import firebase from "firebase/compat/app";
 
 export function transferInCart(id, role) {
-  localStorage.setItem('role', role)
   var desired = localStorage.getItem("desired");
   if (desired != null) {
     desired = JSON.parse(desired);

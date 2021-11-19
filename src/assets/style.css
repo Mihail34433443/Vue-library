@@ -81,7 +81,19 @@ ul {
   --light-grey: #939497;
   --link: #2f80ed;
   --add: #51a217;
-  --delete: rgb(255, 0, 0);
+  --delete: rgb(19, 12, 12);
+}
+
+.notification {
+  display: none;
+  height: 100px;
+  background-color: red;
+}
+.visibility {
+  display: block;
+}
+.access {
+  background-color: yellowgreen;
 }
 
 header {

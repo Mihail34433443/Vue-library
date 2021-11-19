@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import { db } from "../main";
 import catalogItem from "./catalog-item";
+import { getCatalog, deleteBook } from "../services/bookService.js";
 
 export default {
   name: "catalog",
@@ -29,18 +29,12 @@ export default {
     bookClick(id) {
       if (this.$store.getters.info.role != "admin") {
         this.$router.push({ name: "book", query: { book: id } });
-      }
-      else {
+      } else {
         this.$router.push({ name: "changeBook", query: { book: id } });
       }
     },
     deleteBook(id) {
-      db.collection("books")
-        .doc(id)
-        .delete()
-        .then(() => {
-          console.log("книга удалена");
-        });
+      deleteBook(id);
       for (var i = 0; i < this.books.length; i++) {
         if (this.books[i].id == id) {
           this.books.splice(i, 1);
@@ -49,22 +43,8 @@ export default {
       }
     },
   },
-  created() {
-    db.collection("books")
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          this.books.push({
-            id: doc.id,
-            name: doc.data().name,
-            author: doc.data().author,
-            price: doc.data().price,
-            library: doc.data().library,
-            availability: doc.data().availability,
-            qty: doc.data().qty,
-          });
-        });
-      });
+  mounted() {
+    this.books = getCatalog();
   },
 };
 </script>
