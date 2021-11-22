@@ -175,12 +175,12 @@ const addBook = (book) => {
     });
 }
 
-const addCart = (that, userId) => {
+const addCart = (book, qty, userId) => {
   firebase
     .firestore()
     .collection("cart")
     .where("user", "==", userId)
-    .where("book", "==", that.book.id)
+    .where("book", "==", book.id)
     .get()
     .then((querySnapshot) => {
       querySnapshot.docs.forEach((doc) => {
@@ -190,20 +190,20 @@ const addCart = (that, userId) => {
             .collection("cart")
             .doc(doc.id)
             .update({
-              qty: doc.data().qty + that.qty,
+              qty: doc.data().qty + qty,
             });
         }
       });
       if (!querySnapshot.docs.length) {
         firebase.firestore().collection("cart").add({
-          book: that.book.id,
+          book: book.id,
           user: userId,
-          qty: that.qty,
+          qty: qty,
         });
       }
     });
-  firebase.firestore().collection('books').doc(that.book.id).update({
-    qty: that.book.qty - that.qty
+  firebase.firestore().collection('books').doc(book.id).update({
+    qty: book.qty - qty
   })
 }
 
