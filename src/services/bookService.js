@@ -1,3 +1,4 @@
+
 import firebase from "firebase/compat/app";
 
 const getCatalog = () => {
@@ -22,38 +23,120 @@ const getCatalog = () => {
   return result
 }
 
-const getLibrary = (that) => {
+/*const getBook = (books, id, qty) => {
   firebase
     .firestore()
-    .collection("library")
+    .collection("books")
+    .doc(id)
     .get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        that.library.push({
+    .then((doc) => {
+      if (doc.exists) {
+        books.push({
           id: doc.id,
-          active_time: doc.data().active_time,
-          address: doc.data().address,
           name: doc.data().name,
+          author: doc.data().author,
+          price: doc.data().price,
+          library: doc.data().library,
+          availability: doc.data().availability,
+          qty: qty,
+        });
+      }
+    });
+}*/
+
+const getLibrary = () => {
+  return new Promise(function (resolve, reject) {
+    var library = [];
+    firebase
+      .firestore()
+      .collection("library")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          library.push({
+            id: doc.id,
+            active_time: doc.data().active_time,
+            address: doc.data().address,
+            name: doc.data().name,
+          });
         });
       });
-    });
+    resolve(library)
+  })
 }
 
-const getOrders = (that) => {
-  firebase
-    .firestore()
-    .collection("order")
-    .get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        that.orders.push({
-          id: doc.id,
-          books: doc.data().books,
-          user: doc.data().user,
-          status: doc.data().status,
+const getOrders = () => {
+  return new Promise(function (resolve, reject) {
+    var orders = []
+    firebase
+      .firestore()
+      .collection("order")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          orders.push({
+            id: doc.id,
+            books: doc.data().books,
+            user: doc.data().user,
+            status: doc.data().status,
+          });
         });
       });
-    });
+    resolve(orders)
+  })
+}
+
+const getOrder = (id) => {
+  return new Promise(function (resolve, reject) {
+    firebase
+      .firestore()
+      .collection("order")
+      .doc(id)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          var order = doc.data().books
+        }
+        let books = [];
+        for (let i = 0; i < order.length; i++) {
+          firebase
+            .firestore()
+            .collection("books")
+            .doc(order[i].book)
+            .get()
+            .then((doc) => {
+              if (doc.exists) {
+                books.push({
+                  id: doc.id,
+                  name: doc.data().name,
+                  author: doc.data().author,
+                  price: doc.data().price,
+                  library: doc.data().library,
+                  availability: doc.data().availability,
+                  qty: doc.data().qty,
+                });
+              }
+            });
+        }
+        resolve(books)
+      });
+  })
+}
+
+const getOrderStatus = (id) => {
+  return new Promise(function (resolve, reject) {
+    firebase.firestore().collection('order').doc(id).get().then((doc) => {
+      if (doc.exists) {
+        resolve(doc.data().status)
+      }
+    })
+  })
+}
+
+const updateOrderStatus = (id) => {
+  firebase.firestore().collection('order').doc(id).update({
+    status: 'approved'
+  })
 }
 
 const deleteBook = (id) => {
@@ -78,25 +161,25 @@ const deleteOrder = (id) => {
     });
 }
 
-const addBook = (that) => {
+const addBook = (book) => {
   firebase
     .firestore()
     .collection("books")
     .add({
-      author: that.newBook.author,
-      name: that.newBook.name,
-      price: that.newBook.price,
-      library: that.newBook.library,
-      qty: Number(that.newBook.qty),
-      availability: that.newBook.availability,
+      author: book.author,
+      name: book.name,
+      price: book.price,
+      library: book.library,
+      qty: Number(book.qty),
+      availability: book.availability,
     });
 }
 
-const addCart = (that) => {
+const addCart = (that, userId) => {
   firebase
     .firestore()
     .collection("cart")
-    .where("user", "==", that.$store.getters.info.id)
+    .where("user", "==", userId)
     .where("book", "==", that.book.id)
     .get()
     .then((querySnapshot) => {
@@ -114,10 +197,36 @@ const addCart = (that) => {
       if (!querySnapshot.docs.length) {
         firebase.firestore().collection("cart").add({
           book: that.book.id,
-          user: that.$store.getters.info.id,
+          user: userId,
           qty: that.qty,
         });
       }
+    });
+  firebase.firestore().collection('books').doc(that.book.id).update({
+    qty: that.book.qty - that.qty
+  })
+}
+
+const addOrder = (that) => {
+  firebase
+    .firestore()
+    .collection("order")
+    .add({
+      user: that.$store.getters.info.id,
+      books: that.cart,
+      status: "new",
+    })
+    .then(() => {
+      for (let i = 0; i < that.cart.length; i++) {
+        firebase
+          .firestore()
+          .collection("cart")
+          .doc(that.cart[i].id)
+          .delete();
+      }
+      that.books = [];
+      that.cart = [];
+      console.log("ваш заказ принят");
     });
 }
 
@@ -193,12 +302,17 @@ const searchBooks = (that) => {
 
 export {
   getCatalog,
+  //getBook,
   getLibrary,
   getOrders,
+  getOrder,
+  getOrderStatus,
+  updateOrderStatus,
   deleteBook,
   deleteOrder,
   addBook,
   addCart,
+  addOrder,
   changeBook,
   openBook,
   searchBooks

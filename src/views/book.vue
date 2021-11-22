@@ -44,7 +44,7 @@ export default {
     getQty: getQty,
     addCart() {
       if (this.book.qty - this.qty >= 0) {
-        addCart(this);
+        addCart(this.book, this.qty, this.$store.getters.info.id);
         this.book.qty = this.book.qty - this.qty;
       } else {
         console.log("Товар закончился");

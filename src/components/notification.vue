@@ -29,7 +29,6 @@ export default {
   watch: {
     message(newMessage) {
       if (newMessage != null) {
-        console.log(newMessage);
         this.message_data = newMessage;
         this.display = true;
         this.state = newMessage.state;

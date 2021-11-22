@@ -40,8 +40,8 @@ export default {
       this.$router.push({ name: "order", query: { order: id } });
     },
   },
-  created() {
-    getOrders(this)
+  async created() {
+    this.orders = await getOrders()
   },
 };
 </script>

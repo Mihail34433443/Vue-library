@@ -53,11 +53,11 @@ export default {
   },
   methods: {
     addBook() {
-      addBook(this)
+      addBook(this.newBook)
     },
   },
-  created() {
-    getLibrary(this)
+  async created() {
+    this.library = await getLibrary()
   },
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
-  <div class="OrderItem">
-    <div class="container_OrderItem">
+  <div class="orderItem">
+    <div class="container_orderItem">
       {{ book_data.name }}
       {{ book_data.qty }}
     </div>

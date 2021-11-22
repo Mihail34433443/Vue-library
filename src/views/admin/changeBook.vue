@@ -58,9 +58,9 @@ export default {
       changeBook(this);
     },
   },
-  mounted() {
+  async mounted() {
     openBook(this)
-    getLibrary(this)
+    this.library = await getLibrary()
   },
 };
 </script>

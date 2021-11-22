@@ -9,6 +9,7 @@
 <script>
 import firebase from "firebase/compat/app";
 import cartItem from "../components/cart-item.vue";
+import { getBook, addOrder } from "../services/bookService";
 
 export default {
   name: "cart",
@@ -28,38 +29,16 @@ export default {
   },
   watch: {
     async info(newInfo) {
-      console.log(newInfo);
-      if (newInfo.role == undefined) {
-        var desired = localStorage.getItem("desired");
-        if (desired != null) {
-          desired = JSON.parse(desired);
-          for (let i = 0; i < desired.arrayDesired.length; i++) {
-            await firebase
-              .firestore()
-              .collection("books")
-              .doc(desired.arrayDesired[i].id)
-              .get()
-              .then((doc) => {
-                if (doc.exists) {
-                  this.books.push({
-                    id: doc.id,
-                    name: doc.data().name,
-                    author: doc.data().author,
-                    price: doc.data().price,
-                    library: doc.data().library,
-                    availability: doc.data().availability,
-                    qty: desired.arrayDesired[i].qty,
-                  });
-                }
-              });
-          }
-        }
-      }
-      if (newInfo.role == "user") {
+      this.loadCart(newInfo);
+    },
+  },
+  methods: {
+    async loadCart(userInfo) {
+      if (userInfo.role == "user") {
         await firebase
           .firestore()
           .collection("cart")
-          .where("user", "==", this.$store.getters.info.id)
+          .where("user", "==", userInfo.id)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
@@ -92,31 +71,12 @@ export default {
         }
       }
     },
-  },
-  methods: {
     addOrder() {
-      firebase
-        .firestore()
-        .collection("order")
-        .add({
-          user: this.$store.getters.info.id,
-          books: this.cart,
-          status: "new",
-        })
-        .then(() => {
-          for (let i = 0; i < this.cart.length; i++) {
-            firebase
-              .firestore()
-              .collection("cart")
-              .doc(this.cart[i].id)
-              .delete();
-          }
-          this.books = [];
-          this.cart = [];
-          console.log("ваш заказ принят");
-        });
+      addOrder(this);
     },
   },
-  async mounted() {},
+  created() {
+    this.loadCart(this.$store.getters.info);
+  },
 };
 </script>

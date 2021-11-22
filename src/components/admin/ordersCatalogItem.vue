@@ -2,6 +2,7 @@
   <div class="ordersCatalogItem">
     <div class="container_catalogItem">
       {{ order_data.id }}
+      {{ order_data.status }}
       <button @click="orderClick">открыть</button>
       <button @click="deleteOrder">удалить</button>
     </div>

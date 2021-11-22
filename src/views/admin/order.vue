@@ -1,55 +1,39 @@
 <template>
   <div class="order">
     <orderItem v-for="book in books" :key="book.id" v-bind:book_data="book" />
-    <button @click="orderBook">Одобрить</button>
+    <p>Статус: {{ status }}</p>
+    <button @click="updateOrderStatus">Одобрить</button>
   </div>
 </template>
 
 <script>
-import orderItem from '../../components/admin/orderItem.vue'
-import firebase from "firebase/compat/app";
+import orderItem from "../../components/admin/orderItem.vue";
+import {
+  getOrder,
+  getOrderStatus,
+  updateOrderStatus,
+} from "../../services/bookService";
 
 export default {
   name: "order",
   data() {
     return {
-      books: {},
+      books: [],
+      status: "",
     };
   },
   components: {
     orderItem,
   },
   methods: {
-    orderBook() {
-      /*firebase.firestore().collection("order").add({
-        book: this.book.id,
-        addDate: "",
-        dropDate: "",
-        user: this.$store.getters.info.id,
-      });
-      firebase.firestore().collection("books").doc(this.book.id).update({
-        availability: false,
-      });
-      alert("Книга заказана"); */
+    updateOrderStatus() {
+      updateOrderStatus(this.$route.query.order);
+      this.status = "approved";
     },
   },
   async created() {
-    await firebase
-      .firestore() 
-      .collection("order")
-      .doc(this.$route.query.order)
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          this.order.id = doc.id;
-          this.order.addDate = doc.data().addDate;
-          this.order.book = doc.data().book;
-          this.order.dropDate = doc.data().dropDate;
-          this.order.user = doc.data().user;
-        } else {
-          console.log("такой книги нет");
-        }
-      });
+    this.books = await getOrder(this.$route.query.order);
+    this.status = await getOrderStatus(this.$route.query.order);
   },
 };
 </script>
