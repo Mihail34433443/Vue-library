@@ -31,8 +31,7 @@ export default {
   data() {
     return {
       book: {
-        name: "",
-        qty: 0,
+        name: 'asd'
       },
       qty: 1,
     };
@@ -87,7 +86,6 @@ export default {
           }
         }
       }
-
       localStorage.setItem("desired", JSON.stringify(desired));
       var info = localStorage.getItem("desired");
       info = JSON.parse(info);
@@ -103,9 +101,13 @@ export default {
       return reply;
     },
   },
-  async created() {
-    await openBook(this);
-    this.book.qty = getQty(this.book.id, this.book.qty);
+  watch: {
+    
+  },
+  async mounted() {
+    this.book = await openBook(this.$route.query.book);
+    console.log(this.name)
+    this.book.qty = await getQty(this.book.id, this.book.qty);
   },
 };
 </script>

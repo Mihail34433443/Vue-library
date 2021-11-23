@@ -39,8 +39,8 @@ export default {
       }
     },
   },
-  created() {
-    searchBooks(this)
+  async created() {
+    this.books = await searchBooks(this.$route.query.search)
   },
 };
 </script>

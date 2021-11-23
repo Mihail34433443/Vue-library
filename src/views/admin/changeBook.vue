@@ -55,11 +55,11 @@ export default {
   },
   methods: {
     changeBook() {
-      changeBook(this);
+      changeBook(this.book);
     },
   },
   async mounted() {
-    openBook(this)
+    this.book = await openBook(this.$route.query.book)
     this.library = await getLibrary()
   },
 };

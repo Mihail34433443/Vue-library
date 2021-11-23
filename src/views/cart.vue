@@ -72,7 +72,9 @@ export default {
       }
     },
     addOrder() {
-      addOrder(this);
+      addOrder(this.$store.getters.info.id, this.cart);
+      this.books = [];
+      this.cart = [];
     },
   },
   created() {

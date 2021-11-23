@@ -207,97 +207,104 @@ const addCart = (book, qty, userId) => {
   })
 }
 
-const addOrder = (that) => {
+const addOrder = (userId, cart) => {
   firebase
     .firestore()
     .collection("order")
     .add({
-      user: that.$store.getters.info.id,
-      books: that.cart,
+      user: userId,
+      books: cart,
       status: "new",
     })
     .then(() => {
-      for (let i = 0; i < that.cart.length; i++) {
+      for (let i = 0; i < cart.length; i++) {
         firebase
           .firestore()
           .collection("cart")
-          .doc(that.cart[i].id)
+          .doc(cart[i].id)
           .delete();
       }
-      that.books = [];
-      that.cart = [];
       console.log("ваш заказ принят");
     });
 }
 
-const changeBook = (that) => {
-  firebase.firestore().collection("books").doc(that.book.id).set({
-    name: that.book.name,
-    author: that.book.author,
-    availability: that.book.availability,
-    library: that.book.library,
-    price: that.book.price,
-    qty: Number(that.book.qty),
+const changeBook = (book) => {
+  firebase.firestore().collection("books").doc(book.id).set({
+    name: book.name,
+    author: book.author,
+    availability: book.availability,
+    library: book.library,
+    price: book.price,
+    qty: Number(book.qty),
   });
 }
 
-const openBook = (that) => {
-  firebase
-    .firestore()
-    .collection("books")
-    .doc(that.$route.query.book)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        that.book.id = doc.id;
-        that.book.name = doc.data().name;
-        that.book.author = doc.data().author;
-        that.book.library = doc.data().library;
-        that.book.price = doc.data().price;
-        that.book.availability = doc.data().availability;
-        that.book.qty = doc.data().qty;
-      } else {
-        console.log("такой книги нет");
-      }
-    });
+//доделать (на странице book не обновляються данные)
+const openBook = (bookId) => {
+  return new Promise(function (resolve, reject) {
+    var book = {}
+    firebase
+      .firestore()
+      .collection("books")
+      .doc(bookId)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          book.id = doc.id;
+          book.name = doc.data().name;
+          book.author = doc.data().author;
+          book.library = doc.data().library;
+          book.price = doc.data().price;
+          book.availability = doc.data().availability;
+          book.qty = doc.data().qty;
+        } else {
+          console.log("такой книги нет");
+        }
+      });
+    resolve(book)
+  })
 }
 
-const searchBooks = (that) => {
-  firebase
-    .firestore()
-    .collection("books")
-    .where("name", ">=", that.$route.query.search)
-    .where("name", "<=", that.$route.query.search + "\uf8ff")
-    .get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        that.books.push({
-          id: doc.id,
-          name: doc.data().name,
-          author: doc.data().author,
-          price: doc.data().price,
-          library: doc.data().library,
+//тоже самое что и сверху
+const searchBooks = (search) => {
+  return new Promise(function (resolve, reject) {
+    var books = []
+    firebase
+      .firestore()
+      .collection("books")
+      .where("name", ">=", search)
+      .where("name", "<=", search + "\uf8ff")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          books.push({
+            id: doc.id,
+            name: doc.data().name,
+            author: doc.data().author,
+            price: doc.data().price,
+            library: doc.data().library,
+          });
         });
       });
-    });
-
-  firebase
-    .firestore()
-    .collection("books")
-    .where("author", ">=", that.$route.query.search)
-    .where("author", "<=", that.$route.query.search + "\uf8ff")
-    .get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        that.books.push({
-          id: doc.id,
-          name: doc.data().name,
-          author: doc.data().author,
-          price: doc.data().price,
-          library: doc.data().library,
+    firebase
+      .firestore()
+      .collection("books")
+      .where("author", ">=", search)
+      .where("author", "<=", search + "\uf8ff")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          books.push({
+            id: doc.id,
+            name: doc.data().name,
+            author: doc.data().author,
+            price: doc.data().price,
+            library: doc.data().library,
+          });
         });
       });
-    });
+    resolve(books)
+  })
 }
 
 export {
