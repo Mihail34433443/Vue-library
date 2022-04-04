@@ -1,18 +1,29 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="Home">
+    <Search />
+    <button @click="test">оповещение</button>
+    <catalog />
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import catalog from "../components/catalog";
+import Search from "../components/search-bar";
 
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
-    HelloWorld
-  }
-}
+    catalog,
+    Search,
+  },
+  methods: {
+    test() {
+      this.$store.dispatch("addMessage", {
+        text: "текст",
+        state: false,
+        title: "заглавие",
+      });
+    },
+  },
+};
 </script>

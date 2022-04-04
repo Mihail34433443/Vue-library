@@ -1,29 +1,117 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import firebase from 'firebase/compat/app'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: '/login',
+    name: 'login',
+    meta: { layout: 'empty', auth: false },
+    component: () => import('../views/login.vue')
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
+    path: '/registration',
+    name: 'registration',
+    meta: { layout: 'empty', auth: false },
+    component: () => import('../views/registration.vue')
+  },
+  {
+    path: '/',
+    name: 'home',
+    meta: { layout: 'main' },
+    component: () => import('../views/Home.vue')
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    meta: { layout: 'main', auth: true },
+    component: () => import('../views/profile.vue')
+  },
+  {
+    path: '/book',
+    name: 'book',
+    meta: { layout: 'main' },
+    component: () => import('../views/book.vue')
+  },
+  {
+    path: '/changeBook',
+    name: 'changeBook',
+    meta: { layout: 'main', auth: true, view: 'admin' },
+    component: () => import('../views/admin/changeBook.vue')
+  },
+  {
+    path: '/cart',
+    name: 'cart',
+    meta: { layout: 'main' },
+    component: () => import('../views/cart.vue')
+  },
+  {
+    path: '/orders',
+    name: 'orders',
+    meta: { layout: 'main', auth: true, view: 'admin' },
+    component: () => import('../views/admin/orders.vue')
+  },
+  {
+    path: '/order',
+    name: 'order',
+    meta: { layout: 'main', auth: true, view: 'admin' },
+    component: () => import('../views/admin/order.vue')
+  },
+  {
+    path: '/addBook',
+    name: 'addBook',
+    meta: { layout: 'main', auth: true, view: 'admin' },
+    component: () => import('../views/admin/addBook.vue')
+  },
+  {
+    path: '/search',
+    name: 'search',
+    meta: { layout: 'main' },
+    component: () => import('../views/search.vue')
+  },
+  {
+    path: '/accessError',
+    name: 'accessError',
+    meta: { layout: 'main' },
+    component: () => import('../views/accessError.vue')
+  },
 ]
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+// to - куда, from - откуда, next - пропустить куда либо
+router.beforeEach((to, from, next) => {
+  const currentUser = firebase.auth().currentUser
+  const requireAuth = to.matched.some(record => !!record.meta.auth)
+
+  if (to.matched.some(record => record.meta.auth)) {
+    console.log(localStorage.getItem('role'))
+    if (localStorage.getItem('role') == null) {
+      next({
+        path: '/accessError',
+        params: { nextUrl: to.fullPath }
+      })
+    } else {
+      let user = localStorage.getItem('role')
+      if (to.matched.some(record => record.meta.view)) {
+        if (user == 'admin') {
+          next()
+        } else {
+          next({ path: '/accessError' })
+        }
+      } else {
+        next()
+      }
+    }
+  } else {
+    next()
+  }
 })
 
 export default router
